@@ -1,5 +1,5 @@
 # Dados Públicos CNPJ
-- VERSÂO ATUALIZADA E OTIMIZADA DO ORIGINAL [aqui](https://github.com/aphonsoar/Receita_Federal_do_Brasil_-_Dados_Publicos_CNPJ)
+- VERSÂO ATUALIZADA PARA 2025, o código foi refeito e otimizado utilizando como referência o original [aqui](https://github.com/aphonsoar/Receita_Federal_do_Brasil_-_Dados_Publicos_CNPJ)
 
 - Fonte oficial da Receita Federal do Brasil, [aqui](https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj).
 
