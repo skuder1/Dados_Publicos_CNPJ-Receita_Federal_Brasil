@@ -1,5 +1,5 @@
 # Dados Públicos CNPJ
-- VERSÂO ATUALIZADA PARA 2025, o código foi refeito e otimizado utilizando como referência o original [aqui](https://github.com/aphonsoar/Receita_Federal_do_Brasil_-_Dados_Publicos_CNPJ)
+- VERSÂO ATUALIZADA PARA 2025. O código foi refeito e otimizado utilizando como referência o original, [aqui](https://github.com/aphonsoar/Receita_Federal_do_Brasil_-_Dados_Publicos_CNPJ)
 
 - Fonte oficial da Receita Federal do Brasil, [aqui](https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj).
 
@@ -12,8 +12,8 @@ Nesse repositório consta um processo de ETL para **i)** baixar os arquivos; **i
 ---------------------
 
 ### Infraestrutura necessária:
-- [Python]
-- [PostgreSQL]
+- [Python] - Testado até 3.11.9
+- [PostgreSQL] - Testado até 18
 
 ---------------------
 
