@@ -5,7 +5,7 @@
 
 A Receita Federal do Brasil disponibiliza bases com os dados públicos do cadastro nacional de pessoas jurídicas (CNPJ).
 
-Essa base atualiza mensalmente, é possível ver que há varios snapshots, por tanto se atente a entrar na versão que quer e mudar o URl (dados_rf) no código
+Essa base atualiza mensalmente, é possível ver que há varios snapshots, por tanto se atente a entrar na versão mais atual e mudar o URL (dados_rf) no código.
 
 Nesse repositório consta um processo de ETL para **i)** baixar os arquivos; **ii)** descompactar; **iii)** ler, tratar e **iv)** inserir no banco de dados PostgreSQL.
 
