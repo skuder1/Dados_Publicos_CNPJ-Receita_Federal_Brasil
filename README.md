@@ -13,7 +13,7 @@ Nesse repositório consta um processo de ETL para **i)** baixar os arquivos; **i
 
 ### Infraestrutura necessária:
 - [Python] - Testado até 3.11.9
-- [PostgreSQL] - Testado até 18
+- [PostgreSQL] - Testado até 18.1
 
 ---------------------
 
