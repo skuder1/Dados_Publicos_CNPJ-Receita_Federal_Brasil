@@ -1,7 +1,7 @@
 # Dados Públicos CNPJ
-- VERSÃO ATUALIZADA PARA 2025. O código foi refeito e otimizado utilizando como referência o original, [aqui](https://github.com/aphonsoar/Receita_Federal_do_Brasil_-_Dados_Publicos_CNPJ)
+- VERSÃO ATUALIZADA PARA 2026. O código foi refeito e otimizado utilizando como referência o original, [aqui](https://github.com/aphonsoar/Receita_Federal_do_Brasil_-_Dados_Publicos_CNPJ)
 
-- Fonte oficial da Receita Federal do Brasil, [aqui](https://dados.gov.br/dados/conjuntos-dados/cadastro-nacional-da-pessoa-juridica---cnpj).
+- Fonte oficial da Receita Federal do Brasil, [aqui](https://arquivos.receitafederal.gov.br/index.php/s/gn672Ad4CF8N6TK?dir=/Dados/Cadastros/CNPJ).
 
 A Receita Federal do Brasil disponibiliza bases com os dados públicos do cadastro nacional de pessoas jurídicas (CNPJ).
 
