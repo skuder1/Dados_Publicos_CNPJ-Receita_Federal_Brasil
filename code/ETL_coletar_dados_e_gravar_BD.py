@@ -7,8 +7,9 @@ import psycopg2
 import re
 import sys
 import requests
-import wget
 import zipfile
+import xml.etree.ElementTree as ET
+from urllib.parse import quote as urlquote
 
 # ===============================
 # FUNÇÃO DE PROGRESSO UNIVERSAL
@@ -70,8 +71,13 @@ def load_table_with_progress(path, table_name, columns, dtype, engine, chunksize
 def check_diff(url, file_name):
     if not os.path.isfile(file_name):
         return True
+    # Verifica se o arquivo local é um ZIP válido
+    if not zipfile.is_zipfile(file_name):
+        print("Arquivo local corrompido (não é ZIP válido). Re-baixando.")
+        os.remove(file_name)
+        return True
     try:
-        response = requests.head(url, timeout=20)
+        response = requests.head(url, auth=(share_token, ""), timeout=20)
     except Exception:
         return True
     new_size = int(response.headers.get("content-length", 0))
@@ -99,7 +105,9 @@ if not os.path.isfile(dotenv_path):
 print("Usando .env em:", dotenv_path)
 load_dotenv(dotenv_path=dotenv_path)
 
-dados_rf = "https://arquivos.receitafederal.gov.br/dados/cnpj/dados_abertos_cnpj/2025-11/"
+base_url = "https://arquivos.receitafederal.gov.br"
+share_token = "gn672Ad4CF8N6TK"
+share_dir = "/Dados/Cadastros/CNPJ/2026-01"
 
 # ===============================
 # DIRETÓRIOS
@@ -110,40 +118,67 @@ makedirs(output_files); makedirs(extracted_files)
 print(f"Diretórios: output={output_files} extract={extracted_files}")
 
 # ===============================
-# LISTAR ARQUIVOS
+# LISTAR ARQUIVOS (WebDAV)
 # ===============================
 print("Obtendo lista de arquivos...")
 
-resp = requests.get(dados_rf, timeout=20)
+webdav_url = f"{base_url}/public.php/webdav/{share_dir.lstrip('/')}"
+resp = requests.request(
+    "PROPFIND", webdav_url,
+    headers={"Depth": "1"},
+    auth=(share_token, ""),
+    timeout=30
+)
 resp.raise_for_status()
-html = resp.text
 
-matches = re.findall(r'([A-Za-z0-9_\-./\\]+\.zip)', html, flags=re.IGNORECASE)
-Files = sorted({os.path.basename(m) for m in matches})
+tree = ET.fromstring(resp.content)
+ns = {"d": "DAV:"}
+Files = sorted({
+    href.text.split("/")[-1]
+    for response in tree.findall(".//d:response", ns)
+    if (href := response.find("d:href", ns)) is not None
+    and href.text.lower().endswith(".zip")
+})
 
 if not Files:
     print("Nenhum .zip encontrado.")
     sys.exit(1)
 
-print("Arquivos detectados:")
+print(f"Arquivos detectados ({len(Files)}):")
 for f in Files:
     print(" -", f)
 
 # ===============================
 # DOWNLOAD
 # ===============================
-def bar_progress(current, total, width=80):
-    msg = f"Downloading: {current/total*100:.1f}% [{current}/{total}]"
-    sys.stdout.write("\r" + msg)
-    sys.stdout.flush()
+def build_download_url(filename):
+    return f"{base_url}/public.php/webdav/{share_dir.lstrip('/')}/{urlquote(filename)}"
+
+def download_file(url, dest_path):
+    with requests.get(url, stream=True, auth=(share_token, ""), timeout=60) as r:
+        r.raise_for_status()
+        total = int(r.headers.get("content-length", 0))
+        downloaded = 0
+        with open(dest_path, "wb") as f:
+            for chunk in r.iter_content(chunk_size=1024 * 1024):
+                f.write(chunk)
+                downloaded += len(chunk)
+                if total > 0:
+                    pct = downloaded / total * 100
+                    sys.stdout.write(f"\r  {pct:5.1f}%  {downloaded:,}/{total:,} bytes")
+                    sys.stdout.flush()
+    sys.stdout.write("\n")
+    # Valida se o arquivo baixado é um ZIP válido
+    if not zipfile.is_zipfile(dest_path):
+        os.remove(dest_path)
+        raise Exception(f"Download de {os.path.basename(dest_path)} resultou em arquivo inválido (não é ZIP).")
 
 for f in Files:
-    url = dados_rf + f
+    url = build_download_url(f)
     path = os.path.join(output_files, f)
     print(f"\nBaixando {f} ...")
     if check_diff(url, path):
-        wget.download(url, out=output_files, bar=bar_progress)
-        print()
+        download_file(url, path)
     else:
         print("Arquivo existe. Pulando.")
 
